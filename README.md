@@ -1,1 +1,1 @@
-# ガウス過程
+# gaussian-process-bandits
