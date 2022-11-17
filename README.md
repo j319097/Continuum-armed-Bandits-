@@ -1,1 +1,1 @@
-# gaussian-process-bandits
+# gp-bandit

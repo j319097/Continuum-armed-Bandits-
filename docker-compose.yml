@@ -1,9 +1,23 @@
 version: '3'
 services:
+  python3:
+    restart: always
+    build: 
+      context: ./docker
+      dockerfile: Dockerfile
+    container_name: python3-j3
+    environment: 
+      PYTHONPATH: /work
+    working_dir: /work
+    tty: true
+    volumes:
+      - ./work:/work
   jupyterlab:
-    build: .
-    image: jupyterlab-img
-    container_name: gp_bandit
+    build: 
+      context: ./docker
+      dockerfile: Dockerfile
+    image: jupyterlab-img-j3
+    container_name: bandit
     working_dir: /work
     volumes:
       - ./work:/work
