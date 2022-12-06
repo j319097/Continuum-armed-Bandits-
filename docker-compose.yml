@@ -22,6 +22,6 @@ services:
     volumes:
       - ./work:/work
     ports:
-      - "8888:8888"
+      - "18888:18888"
     command:
       jupyter-lab --ip 0.0.0.0 --allow-root -b localhost
