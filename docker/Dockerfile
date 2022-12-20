@@ -7,4 +7,5 @@ RUN pip install --upgrade pip
 RUN python -m pip install numpy
 RUN python -m pip install pandas
 RUN python -m pip install matplotlib
+RUN python -m pip install scipy
 RUN python -m pip install jupyterlab
