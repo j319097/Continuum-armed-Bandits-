@@ -35,13 +35,13 @@ class GP:
         self._y = np.append(self._y, y)
         self._invk = np.linalg.inv(self._k + self._sigma * np.eye(n + 1))
 
-    def mean_var(self, x):
+    def dist(self, x):
         k0 = self._kernel(x, x) + self._sigma
         k1 = self._kernel(x, self._x[:, None])
         dy = self._y - self._mu_y
         mean = self._mu_y + k1.T @ self._invk @ dy
-        var = k0 - np.diag(k1.T @ self._invk @ k1)
-        return mean, var
+        var = k0 - (k1 * (self._invk @ k1)).sum(axis=0)
+        return st.norm(mean, np.sqrt(var))
 
 
 class BP:
@@ -50,11 +50,11 @@ class BP:
         self._xm = np.zeros(0)
         self._xp = np.zeros(0)
 
-    def append_plus(self, x):
-        self._xp = np.append(self._xp, x)
-
-    def append_minus(self, x):
-        self._xm = np.append(self._xm, x)
+    def append(self, x, y):
+        if y == 1:
+            self._xp = np.append(self._xp, x)
+        else:
+            self._xm = np.append(self._xm, x)
 
     def dist(self, x):
         alpha = 1
