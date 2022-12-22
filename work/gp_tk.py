@@ -4,8 +4,8 @@ import scipy.stats as st
 
 class RBF:
     def __init__(self, alpha, beta):
-        self._alpha = alpha
-        self._beta = beta
+        self._alpha = alpha ** 2
+        self._beta = beta ** 2
         
     def __call__(self, x1, x2):
         return self._alpha * np.exp(-np.square(x1 - x2) / self._beta)
@@ -14,7 +14,7 @@ class RBF:
 class GP:
     def __init__(self, mu_y, sigma, kernel):
         self._mu_y = mu_y
-        self._sigma = sigma
+        self._sigma = sigma ** 2
         self._kernel = kernel
         self._x = np.zeros(0)
         self._y = np.zeros(0)
@@ -36,7 +36,7 @@ class GP:
         self._invk = np.linalg.inv(self._k + self._sigma * np.eye(n + 1))
 
     def mean_var(self, x):
-        k0 = self._kernel(x, x)
+        k0 = self._kernel(x, x) + self._sigma
         k1 = self._kernel(x, self._x[:, None])
         dy = self._y - self._mu_y
         mean = self._mu_y + k1.T @ self._invk @ dy
