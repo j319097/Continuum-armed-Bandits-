@@ -1,4 +1,5 @@
 import numpy as np
+import scipy.stats as st
 
 
 class RBF:
@@ -41,3 +42,25 @@ class GP:
         mean = self._mu_y + k1.T @ self._invk @ dy
         var = k0 - np.diag(k1.T @ self._invk @ k1)
         return mean, var
+
+
+class BP:
+    def __init__(self, sigma):
+        self._sigma = sigma
+        self._xm = np.zeros(0)
+        self._xp = np.zeros(0)
+
+    def append_plus(self, x):
+        self._xp = np.append(self._xp, x)
+
+    def append_minus(self, x):
+        self._xm = np.append(self._xm, x)
+
+    def dist(self, x):
+        alpha = 1
+        if self._xp.size > 0:
+            alpha += np.exp(-np.square((self._xp - x[:, None]) / self._sigma)).sum(axis=1)
+        beta = 1
+        if self._xm.size > 0:
+            beta += np.exp(-np.square((self._xm - x[:, None]) / self._sigma)).sum(axis=1)
+        return st.beta(alpha, beta)
