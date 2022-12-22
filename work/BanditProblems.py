@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 
 # gauusian process
 class GP():
-    def __init__(self, kernel, sigma = 1e-2):
+    def __init__(self, kernel, sigma = 1e-2, y_mean = 0.5):
         self.x_train = np.array([])
         self.y_train = np.array([])
         self.kernel = kernel
         self.sigma = sigma
+        self.y_mean = y_mean
 
     def append(self, x_train, y_train):
         self.x_train = np.append(self.x_train, x_train)
@@ -29,7 +30,7 @@ class GP():
             k__ = self.kernel_matrix(x, x)
 
             k_K = k_.T.dot(K_inv)
-            y_mean = np.append(y_mean, k_K.dot(self.y_train))
+            y_mean = np.append(y_mean, self.y_mean+k_K.dot(self.y_train))
             y_var = np.append(y_var, k__ - k_K.dot(k_))# + self.sigma**2)
         return y_mean, y_var
     
@@ -84,7 +85,7 @@ class rbf:
     
 # train data function
 def train_one_peak(x,mu=0.5,sigma=0.1):
-    p = 0.8*np.exp(-(x-mu)**2/sigma)
+    p = 0.5*np.exp(-(x-mu)**2/sigma)
     return np.random.binomial(1,p),p
 
 def train_two_peak(x,mu=0.5,sigma=0.1):
@@ -188,9 +189,9 @@ def gp_plot(GP, y_mean, y_std,num_data, train, x):
     plt.plot(x, y, label='true', linestyle='dashed', color='black')
     plt.plot(x, y_mean, label='mean', color='#0066cc')
     plt.fill_between(x, y_mean-y_std, y_mean+y_std, label='2σ credible region', color='#0066cc', alpha=0.3)
-    plt.scatter(GP.x_train, GP.y_train, label='data', color='black', marker='x', s=200)
-    plt.xlim(0,1)
-    plt.ylim(0,1)
+    plt.scatter(GP.x_train, GP.y_train, label='data', color='black', marker='x', s=50)
+    # plt.xlim(0,1)
+    # plt.ylim(0,1)
     plt.xlabel('x')
     plt.ylabel('y')
     plt.grid()
