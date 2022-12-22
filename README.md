@@ -1,4 +1,4 @@
-# Continuous-Bandit
+# Continuum-armed Bandits 
 
 ```
 $ make build
