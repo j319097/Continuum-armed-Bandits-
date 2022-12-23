@@ -45,8 +45,8 @@ class GP:
 
 
 class BP:
-    def __init__(self, sigma):
-        self._sigma = sigma
+    def __init__(self, kernel):
+        self._kernel = kernel
         self._xm = np.zeros(0)
         self._xp = np.zeros(0)
 
@@ -59,8 +59,8 @@ class BP:
     def dist(self, x):
         alpha = 1
         if self._xp.size > 0:
-            alpha += np.exp(-np.square((self._xp - x[:, None]) / self._sigma)).sum(axis=1)
+            alpha += self._kernel(self._xp, x[:, None]).sum(axis=1)
         beta = 1
         if self._xm.size > 0:
-            beta += np.exp(-np.square((self._xm - x[:, None]) / self._sigma)).sum(axis=1)
+            beta += self._kernel(self._xm, x[:, None]).sum(axis=1)
         return st.beta(alpha, beta)
