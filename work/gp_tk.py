@@ -33,7 +33,21 @@ class GP:
         self._k[n, n] = k0
         self._x = np.append(self._x, x)
         self._y = np.append(self._y, y)
-        self._invk = np.linalg.inv(self._k + self._sigma * np.eye(n + 1))
+        
+        A = self._k[:n,:n]
+        B = k1
+        C = k2
+        S = C - B.T@A**-1@B
+        k11 = A**-1+ A**-1@B@S**-1@B.T@A**-1
+        k12 = -A**-1 @ B @ S**-1
+        k21 = -S**-1 @ B.T @ A**-1
+        k22 = S**-1
+        K = [[k11,k21],
+             [k21,k22]]
+        
+        # self._invk = np.linalg.inv(self._k + self._sigma * np.eye(n + 1))
+        self._invk = np.linalg.inv(K + self._sigma * np.eye(n + 1))
+        
 
     def dist(self, x):
         k0 = self._kernel(x, x) + self._sigma
